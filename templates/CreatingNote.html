@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='CreatingNote.css') }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+<body>
+    <nav>
+        <ul>
+            <div class="sideNav">
+                <div class="rightSideNav"><li><a href="{{ url_for('notes') }}">My Notes</a></li></div>
+                <div class="leftSideNav">
+                    <li><a href="{{ url_for('profile_settings') }}">{{ username }}</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                </div>
+            </div>
+        </ul>
+    </nav>
+
+    <form action="{{ url_for('save_note', noteid=note.noteid if note else 0) }}" method="post">
+        <input type="hidden" name="noteid" value="{{ note.noteid if note else '' }}">
+        <div class="editorContainer">
+            <label for="titleNote">Title:</label>
+            <input 
+                type="text" 
+                id="inputTitleNote" 
+                name="titleNote" 
+                placeholder="Enter the title of your note" 
+                value = "{{ note.title if note else '' }}"
+                required
+            ><br><br>
+            <div class="toolbar">
+                <div class="toolbar">
+                    <button onclick="formatText('bold')"><i class="fa fa-bold"></i></button>
+                    <button onclick="formatText('italic')"><i class="fa fa-italic"></i></button>
+                    <button onclick="formatText('underline')"><i class="fa fa-underline"></i></button>
+                    <button onclick="formatText('strikethrough')"><i class="fa fa-strikethrough"></i></button>
+                    <button onclick="formatText('superscript')"><i class="fa fa-superscript"></i></button>
+                    <button onclick="formatText('subscript')"><i class="fa fa-subscript"></i></button>
+                    <button onclick="formatText('insertOrderedList')"><i class="fa fa-list-ol"></i></button>
+                    <button onclick="formatText('insertUnorderedList')"><i class="fa fa-list-ul"></i></button>
+                    <button onclick="formatText('justifyLeft')"><i class="fa fa-align-left"></i></button>
+                    <button onclick="formatText('justifyCenter')"><i class="fa fa-align-center"></i></button>
+                    <button onclick="formatText('justifyRight')"><i class="fa fa-align-right"></i></button>
+                    <button onclick="formatText('justifyFull')"><i class="fa fa-align-justify"></i></button>
+                    <button onclick="addLink()"><i class="fa fa-link"></i></button>
+                    
+                    <select onchange="formatText('fontSize', this.value)">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                    </select>
+                <!-- <input type="color" id="fontColor" title="Font Color" onchange="formatText('foreColor', this.value)">
+                <label for="fontColor">Font Color</label>
+                <input type="color" id="highlightColor" title="Highlight Color" onchange="formatText('hiliteColor', this.value)">
+                <label for="highlightColor">Highlight Color</label> -->
+                </div>
+            </div>
+            <div class="editor" id="editor" contenteditable="true">
+                {{ note.content | safe if note else "Start writing your note here..." }}
+            </div>
+            <textarea name="content" id="content" style="display: none;"></textarea>
+            <button class="save-button" onclick="saveNote()">Save Note</button>
+        </div>
+    </form>
+
+    <section class="recommendationSection">
+        <div class="recommendationHeading">
+            <h1 class="subSectionTitle">Recommendations for this note</h1>
+            <form action="{{ url_for('recommend') }}" method="post">
+                <input type="hidden" name="noteid" value="{{ note.noteid if note else '' }}">
+                <input type="hidden" name="titleNote" value="{{ note.title if note else '' }}">
+                <input type="hidden" name="content" value="{{ note.content | safe if note else '' }}">
+                <button type="submit" class="clearRecommendations">Provide Me Learning Recommendations Now!</button>
+            </form>
+        </div>
+    
+        <div class="recommendationContainer">
+            <!-- Example entry for Learning Resources -->
+            <!-- <div class="recommendationView">
+                <h3>Resource Name: <a href="https://example.com" target="_blank">Sample Resource</a></h3>
+                <h5>Description: A brief description of the resource goes here.</h5>
+                <p>Subject Area: Computer Science</p>
+            </div> -->
+
+
+            {% if recommendations %}
+                {% for recommendation in recommendations %}
+                    <div class="recommendationView">
+                        <h3>Title: {{ recommendation.title }}</h3>
+
+                        {% if recommendation.type == "Link" %}
+                            <p>Type: Link</p>
+                            <p>Link: <a href="{{ recommendation.url }}" target="_blank">{{ recommendation.url }}</a></p>
+                        {% else %}
+                            <p>Type: Book</p>
+                        {% endif %}
+
+                        {% if recommendation.description and recommendation.description != 'nan' %}
+                            <h5>Description: {{ recommendation.description }}</h5>
+                        {% endif %}
+
+                        {% if recommendation.subject and recommendation.subject != 'No subject area provided' %}
+                            <p>Subject Area: {{ recommendation.subject }}</p>
+                        {% endif %}
+
+                        {% if recommendation.author and recommendation.author != 'No author' %}
+                            <p>Author: {{ recommendation.author }}</p>
+                        {% endif %}
+
+                        <p>Similarity Score: {{ recommendation.similarity|round(2) }}</p>
+                        
+                        <div class="feedbackbuttons">
+                            <button class="relevantButton" onclick="submitFeedback('{{ recommendation.title }}', true)">Mark as Relevant</button>
+                            <button class="relevantButton" onclick="submitFeedback('{{ recommendation.title }}', false)">Not Relevant</button>
+                        </div>
+                        
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No recommendations available. Try providing more detailed notes.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    {% if message %}
+    <script>
+        alert("{{ message }}");
+    </script>
+    {% endif %}
+    
+
+    <script>
+        // Format text based on the toolbar button clicked
+        function formatText(command, value = null) {
+            event.preventDefault(); // Prevent default button action
+            if (command === 'heading') {
+                document.execCommand('formatBlock', false, value);
+            } else {
+                document.execCommand(command, false, value);
+            }
+        }
+
+
+        // Add hyperlink functionality
+        function addLink() {
+            const url = prompt("Enter the URL:", "https://");
+            if (url) {
+                document.execCommand("createLink", false, url);
+            }
+        }
+    </script>
+
+    <script>
+        function saveNote() {
+            const editorContent = document.getElementById('editor').innerHTML;
+            document.getElementById('content').value = editorContent; // Save the HTML content
+        }
+
+        function submitFeedback(title, isRelevant) {
+            const noteid = document.querySelector('input[name="noteid"]').value; // Get the note ID
+
+            fetch('/submit_feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: title,
+                    isRelevant: isRelevant,
+                    noteid: noteid
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error submitting feedback:', error);
+            });
+        }
+    </script>
+    
+</body>
+</html>

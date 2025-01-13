@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='notes.css') }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+<body>
+    <nav>
+        <ul>
+            <div class="sideNav">
+                <div class="rightSideNav"><li><a href="{{ url_for('notes') }}">My Notes</a></li></div>
+                <div class="leftSideNav">
+                    <li><a href="{{ url_for('profile_settings') }}">{{ username }}</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                </div>
+            </div>
+        </ul>
+    </nav>
+
+    <section class="initialRecommendations">
+        <h2>Your Personalised Recommendations</h2>
+        <div class="recommendationContainer">
+            {% if initialRecommendations %}
+                {% for recommendation in initialRecommendations %}
+                    <div class="recommendationView">
+                        <h3>Resource Name: {{ recommendation.resourceName }}</h3>
+
+                        {% if recommendation.type == "Link" %}
+                                <p>Type: Link</p>
+                                <p>Link: <a href="{{ recommendation.url }}" target="_blank">{{ recommendation.url }}</a></p>
+                            {% else %}
+                                <p>Type: Book</p>
+                            {% endif %}
+
+                        {% if recommendation.description %}
+                            <h5>Description: {{ recommendation.description }}</h5>
+                        {% endif %}
+                        {% if recommendation.subjectArea %}
+                            <p>Subject Area: {{ recommendation.subjectArea }}</p>
+                        {% endif %}
+                        {% if recommendation.bookAuthor %}
+                            <p>Author: {{ recommendation.bookAuthor }}</p>
+                        {% endif %}
+                        <p>Recommended On: {{ recommendation.createdAt }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No new recommendations available.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <div class="seachbar">
+        <input type="text" id="searchNotes" name="searchNotes" placeholder="Search for note..." onkeyup="searchNotes()">
+        <a href="#">
+            <i class="fa fa-search"></i>
+        </a>
+    </div>
+        
+    <div class="subNavbar">
+        <ul>
+            <li><a href="#" class="active" onclick="displayNotes()">Notes</a></li>
+            <li><a href="#" onclick="displayRecommendations()">Recommendation History</a></li>
+        </ul>
+    </div>
+
+    <section class="notesSection" style="display:block;">
+        <div class="noteHeading">
+            <h1 class="subSectionTitle">Notes</h1>
+            <a href="{{ url_for('create_note') }}"><button class="noteCreation">Create a Note</button></a>
+        </div>
+
+        <div class="noteContainer" id="noteContainer">
+            {% if notes %}
+                {% for note in notes %}
+                    <div class="noteView" data-search-term="{{ note.title | lower }} {{ note.content | lower }}">
+                        <h3>{{ note.title }}</h3>
+                        <h5>{{ note.content|safe|truncate(100) }}</h5>
+                        <small>Created At: {{ note.createdAt }}</small>
+                        <a href="{{ url_for('view_note', noteid = note.noteid) }}">
+                            <button class="viewNote">View Note</button>
+                        </a>
+                        <a href="{{ url_for('delete_note', noteid=note.noteid) }}" class="trash-icon-link" onclick="return confirm('Are you sure you want to delete this note?');">
+                            <i class="fa fa-trash-o trash-icon"></i>
+                        </a>                    
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No Notes Found!</p>
+            {% endif %}
+
+            <!-- <div class="noteView">
+                <h3>Title of the note</h3>
+                <h5>Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit facilis rerum est perferendis, amet commodi quidem ipsam debitis sapiente maxime praesentium placeat nemo? Excepturi, quibusdam? Sint maxime perferendis iure omnis?...</h5>
+                <button class="viewNote">View Note</button>
+                <i class="fa fa-trash-o trash-icon"></i>
+            </div> -->
+        </div>
+    </section>
+
+    <section class="recommendationSection" style="display: none;">
+        <div class="recommendationHeading">
+            <h1 class="subSectionTitle">Recommendation History</h1>
+            <form action="{{ url_for('clear_recommendations') }}" method="post">
+                <button type="submit" id="clearRecommendations" class="clearRecommendations" onclick="confirmClearRecommendations()">Clear All Recommendations</button>
+            </form>        
+        </div>
+    
+        <section class="recommendationHistory">
+            <div class="recommendationContainer">
+                {% if recommendedHistory %}
+                    {% for recommendation in recommendedHistory %}
+                        <div class="recommendationView" data-search-term="{{ recommendation.resourceName | lower }} {{ recommendation.description | lower }}">
+                            <h3>Resource Name: {{ recommendation.resourceName }}</h3>
+
+                            {% if recommendation.type == "Link" %}
+                                <p>Type: Link</p>
+                                <p>Link: <a href="{{ recommendation.url }}" target="_blank">{{ recommendation.url }}</a></p>
+                            {% else %}
+                                <p>Type: Book</p>
+                            {% endif %}
+
+                            {% if recommendation.description %}
+                                <h5>Description: {{ recommendation.description }}</h5>
+                            {% endif %}
+                            {% if recommendation.subjectArea %}
+                                <p>Subject Area: {{ recommendation.subjectArea }}</p>
+                            {% endif %}
+                            {% if recommendation.bookAuthor %}
+                                <p>Author: {{ recommendation.bookAuthor }}</p>
+                            {% endif %}
+                            <p>Recommended On: {{ recommendation.createdAt }}</p>
+
+                            {% if recommendation.isRelevant is not none %}
+                                <p>Feedback:
+                                    {% if recommendation.isRelevant == 1%}
+                                        <strong>Relevant</strong>
+                                    {% else %}
+                                        <strong>Not Relevant</strong>
+                                    {% endif %}
+                                </p>
+                            {% else %}
+                                <p>Feedback: No feedback provided</p>
+                            {% endif %}
+
+                            <a href="{{ url_for('delete_recommendation', recommendationid=recommendation.recommendationid) }}" class="trash-icon-link" onclick="return confirm('Are you sure you want to delete this recommendation?');">
+                                <i class="fa fa-trash-o trash-icon"></i>
+                            </a>  
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No recommendations found in your history.</p>
+                {% endif %}
+            </div>
+        </section>
+    </section>
+
+    <script>
+        // Function to display Notes section
+        function displayNotes() {
+            document.querySelector('.notesSection').style.display = 'block'; // Show Notes
+            document.querySelector('.recommendationSection').style.display = 'none'; // Hide Recommendations
+        }
+    
+        // Function to display Recommendation History section
+        function displayRecommendations() {
+            document.querySelector('.notesSection').style.display = 'none'; // Hide Notes
+            document.querySelector('.recommendationSection').style.display = 'block'; // Show Recommendations
+        }
+
+        // Highlight the active navigation link
+        const navLinks = document.querySelectorAll('.subNavbar ul li a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                // Remove active class from all links
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                // Add active class to the clicked link
+                link.classList.add('active');
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set a data-search-term attribute for each note based on its title and content
+            document.querySelectorAll('.noteView').forEach(note => {
+                const title = note.querySelector('h3').textContent.toLowerCase();
+                const content = note.querySelector('h5').textContent.toLowerCase();
+                note.setAttribute('data-search-term', `${title} ${content}`);
+            });
+
+            document.querySelectorAll('.recommendationView').forEach(recommendation => {
+                const title = recommendation.querySelector('h3').textContent.toLowerCase();
+                const content = recommendation.querySelector('h5').textContent.toLowerCase();
+                recommendation.setAttribute('data-search-term', `${title} ${content}`);
+            });
+
+            // Add event listener for the search input
+            const searchBox = document.getElementById('searchNotes');
+            searchBox.addEventListener('keyup', () => {
+                const searchTerm = searchBox.value.toLowerCase();
+
+                document.querySelectorAll('.noteView').forEach(note => {
+                    const searchAttribute = note.getAttribute('data-search-term');
+                    if (searchAttribute.includes(searchTerm) || searchTerm.length < 1) {
+                        note.style.display = 'block'; // Show the note
+                    } else {
+                        note.style.display = 'none'; // Hide the note
+                    }
+                });
+
+                document.querySelectorAll('.recommendationView').forEach(recommendation => {
+                    const searchAttribute = recommendation.getAttribute('data-search-term');
+                    if (searchAttribute.includes(searchTerm) || searchTerm.length < 1) {
+                        recommendation.style.display = 'block'; // Show the note
+                    } else {
+                        recommendation.style.display = 'none'; // Hide the note
+                    }
+                });
+            });
+        });
+
+        function confirmClearRecommendations(){
+            const userConfirmed = confirm("Are youn sure you want to clear all recommendations?")
+            if (userConfirmed){
+                document.getElementById('clearRecommendations').submit()
+            }
+        }
+    </script>
+</body>
+</html>

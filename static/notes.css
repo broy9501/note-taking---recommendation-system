@@ -1,0 +1,221 @@
+html{
+    background: #000000;
+    color: white;
+}
+
+nav{
+    margin-bottom: 40px;
+    border-bottom: 2px solid #2c2c2c;
+}
+.sideNav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+li{
+    list-style: none;
+}
+.leftSideNav{
+    display: flex;
+    align-items: center;
+}
+.leftSideNav li{
+    margin-right: 20px;
+}
+.rightSideNav{
+    margin-left: -20px;
+}
+.sideNav a{
+    text-decoration: none;
+    color: white;
+    font-size: 22px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    transition: all 0.5s ease-out;
+}
+.sideNav a:hover{
+    color: red;
+    border-bottom: 2px solid red;
+}
+
+.subNavbar{
+    margin-top: 100px;
+    margin-bottom: 30px;
+}
+.subNavbar ul{
+    display: flex;
+    align-items: center;
+    gap: 100px;
+    position: relative;
+    left: 20px;
+}
+.subNavbar ul li{
+    font-size: 20px;
+    transition: all 0.5s ease-out;
+}
+.subNavbar ul li:hover{
+    border-bottom: 2px solid red;
+}
+.subNavbar ul li a{
+    color: white;
+    text-decoration: none;
+    transition: 0.5s ease-in-out;
+}
+.subNavbar ul li a:hover{
+    color: red;
+}
+.subNavbar ul li a.active {
+    background-color: #2c2c2c;
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid red;
+    color: white;
+}
+
+.subSectionTitle{   
+    position: relative;
+    top: 8px;
+    left: 5px;
+    font-size: 35px;
+    font-weight: 600;
+    width: 85px;
+    transition: all 0.5s ease-out;
+}
+.initialRecommendations h2{
+    position: relative;
+    top: 50px;
+    left: 50px;
+    font-size: 35px;
+    font-weight: 600;
+    width: 560px;
+    transition: all 0.5s ease-out;
+}
+.subSectionTitle:hover, .initialRecommendations h2:hover{
+    color: red;
+    border-bottom: 2px solid red;
+}
+
+.noteContainer, .archiveContainer, .recommendationContainer{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: start;
+    padding: 50px 50px;
+    box-sizing: border-box; 
+    gap: 100px;
+    width: 100%;
+}
+
+.noteHeading, .archiveHeading, .recommendationHeading{
+    position: relative;
+    left: 50px;
+    top: 50px;
+}
+
+.noteCreation, .noteArchive, .clearRecommendations{
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    outline: 0;
+    padding: 15px 25px;
+    margin: 30px 0 20px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 2px solid red;
+    transition: all 0.5s ease-in-out
+}
+.noteCreation:hover, .noteArchive:hover, .clearRecommendations:hover{
+    border: 2px solid #2c2c2c;
+    background-color: red;
+}
+
+.noteView, .recommendationView{
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+    min-height: 200px;
+    white-space: normal;
+    overflow-wrap: break-word;
+    background: white;
+    color: black;
+    padding: 20px;
+    margin: 20px 0;
+    outline: none;
+    border-radius: 5px;
+    border: 2px solid red;
+}
+
+.noteContainer i, .recommendationContainer i{
+    font-size:28px;
+    color:red;
+    position: absolute;
+    bottom: 15px;
+    /* right: 15px; */
+    cursor: pointer;
+}
+
+.trash-icon{
+    right: 15px;
+}
+
+.restore-icon{
+    right: 50px;
+}
+
+.viewNote{
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: 0;
+    padding: 5px 10px;
+    margin: 30px 0 20px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 2px solid red;
+    position: relative;
+    top: 28px;
+    right: 7px;
+    transition: all 0.5s ease-in-out;
+}
+.viewNote:hover{
+    border: 2px solid #2c2c2c;
+    background-color: red;
+}
+
+.seachbar{
+    margin-top: 80px;
+    height: 30px;
+    width: 400px;
+    position: relative;
+    left: 50px;
+    display: flex;
+    cursor: pointer;
+    border: 2px solid red;
+    padding: 10px 20px;
+    background: white;
+    border-radius: 30px;
+    align-items: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+.seachbar input{
+    width: 500px;
+    outline: none;
+    border: none;
+    font-weight: 500;
+    transition: 0.8s;
+    background: transparent;
+}
+.seachbar a .fa{
+    color: red;
+    font-size: 18px;
+}
+
+a{
+    text-decoration: none;
+}

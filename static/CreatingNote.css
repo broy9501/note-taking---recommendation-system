@@ -1,0 +1,245 @@
+html{
+    background: #000000;
+    color: white;
+}
+
+nav{
+    margin-bottom: 40px;
+    border-bottom: 2px solid #2c2c2c;
+}
+.sideNav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+li{
+    list-style: none;
+}
+.leftSideNav{
+    display: flex;
+    align-items: center;
+}
+.leftSideNav li{
+    margin-right: 20px;
+}
+.rightSideNav{
+    margin-left: -20px;
+}
+.sideNav a{
+    text-decoration: none;
+    color: white;
+    font-size: 22px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    transition: all 0.5s ease-out;
+}
+.sideNav a:hover{
+    color: red;
+    border-bottom: 2px solid red;
+}
+
+/* Editor Container */
+.editorContainer {
+    margin: 20px auto;
+    /* max-width: 800px; */
+    padding: 15px;
+    border: 2px solid red;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Toolbar */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.toolbar button, .custom-file-upload {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.toolbar button:hover, .custom-file-upload:hover {
+    background-color: darkred;
+}
+
+.toolbar select {
+    padding: 8px;
+    margin-left: 10px;
+    margin-right: 15px;
+    border: 1px solid red;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+input[type="color"]{
+    margin-left: 10px;
+}
+
+.toolbar label{
+    margin-left: 5px;
+}
+
+.editor {
+    width: 98%;
+    height: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    font-family: Arial, sans-serif;
+}
+
+/* Save Button */
+.save-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.save-button:hover {
+    background-color: darkred;
+}
+
+
+
+
+.recommendationContainer{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: start;
+    padding: 50px 50px;
+    box-sizing: border-box; 
+    gap: 100px;
+    width: 100%;
+}
+
+.recommendationHeading{
+    position: relative;
+    left: 50px;
+    top: 50px;
+}
+
+.clearRecommendations{
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    outline: 0;
+    padding: 15px 25px;
+    margin: 30px 0 20px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 2px solid red;
+    transition: all 0.5s ease-in-out
+}
+.clearRecommendations:hover, .relevantButton:hover{
+    border: 2px solid #2c2c2c;
+    background-color: red;
+}
+
+.recommendationView{
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+    min-height: 200px;
+    background: white;
+    color: black;
+    padding: 20px;
+    margin: 20px 0;
+    outline: none;
+    border-radius: 5px;
+    border: 2px solid red;
+}
+
+
+/* Styling for the label */
+label {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #f5f5f5;
+}
+
+/* Styling for the input field */
+input[type="text"] {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: white;
+    background-color: #1f1f1f;
+    border: 2px solid #444;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* Placeholder text color */
+input[type="text"]::placeholder {
+    color: #888;
+    font-style: italic;
+}
+
+/* Focus effect for the input field */
+input[type="text"]:focus {
+    border-color: red;
+    background-color: #333;
+    box-shadow: 0 0 5px red;
+}
+
+/* Add spacing between input fields */
+.editorContainer input {
+    margin-bottom: 20px;
+}
+
+/* Add spacing for the label */
+.editorContainer label {
+    margin-bottom: 5px;
+}
+
+.recommendationView a{
+    overflow-wrap: break-word;
+}
+
+.relevantButton{
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    /* color: white; */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    outline: 0;
+    padding: 5px 10px;
+    margin: 20px 0 10px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 2px solid red;
+    transition: all 0.5s ease-in-out;
+}
+
+.feedbackbuttons{
+    display: flex;
+    justify-content: space-between;
+}

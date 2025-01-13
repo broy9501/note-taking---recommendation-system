@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='LoginSignup.css') }}">
+    </head>
+<body>
+
+<div class="homeHeading">
+    <h1>Note Taking Application With Recommendation System</h1>
+    <h2>Login/Sign Up</h2>
+</div>
+
+{% if msg %}
+    <p class="errorMessage">{{ msg }}</p>
+{% endif %}
+
+<section class="LoginSignupForm">
+    <div class="textContainer">
+        <div class="slider"></div>
+        <div class="title login active" onclick="showLoginForm()">Login</div>
+        <div class="title signup" onclick="showSignupForm()">Sign Up</div>
+    </div>
+    
+    
+
+    <form action="{{ url_for('register') }}" method="post" class="formDetails signupSection">
+        <div class="input-container">
+            <label for="uname">Username</label>
+            <input type="text" id="uname" name="username" placeholder="Enter your username" required><br>
+        </div>
+    
+        <div class="input-container">
+            <label for="fname">Full Name</label>
+            <input type="text" id="fname" name="name" placeholder="Enter your full name" required><br>
+        </div>
+    
+        <div class="input-container">
+            <label for="pwd">Password</label>
+            <input type="password" id="pwd" name="password" placeholder="Enter a strong password" required><br>
+        </div>
+    
+        <div class="input-container">
+            <label for="pwd">Email Address</label>
+            <input type="email" id="pwd" name="email" placeholder="Enter your email address" required><br>
+        </div>
+    
+        <div class="input-container">
+            <label for="schoolType">Kind of School</label>
+            <select name="kindOfSchool" id="schoolType" required>
+                <option value="">--Select--</option>
+                <option value="university">University</option>
+                <option value="college">College</option>
+                <option value="high school">High School</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <br>
+    
+        <div class="input-container">
+            <label for="currentCourses">Current Courses or Modules</label>
+            <textarea 
+                name="currentCM" 
+                id="currentCourses"
+                placeholder="Enter your current courses or modules, separated by commas (e.g., Data Science, Calculus II, Philosophy)"
+                required
+            ></textarea>
+        </div>
+        <br>
+    
+        <div class="input-container">
+            <label for="subjectInterest">Subjects of Interest</label>
+            <textarea 
+                name="subOfInt" 
+                id="subjectInterest"
+                placeholder="Enter subjects you're interested in (e.g., Artitifical Intelligence, Physics)"
+                required
+            ></textarea>
+        </div>
+        <br>
+    
+        <button type="submit" class="signupButton">Sign Up</button>
+    </form>  
+
+    <form action="{{ url_for('login') }}" method="post" class="formDetails loginSection active">
+        <label for="uname">Username</label>
+        <input type="text" id="uname" name="username" placeholder="Enter your username" required><br>
+        <br>
+
+        <label for="pwd">Password</label>
+        <input type="password" id="pwd" name="password" placeholder="Enter a strong password" required><br>
+        <br>
+
+        <button type="submit" class="loginButton">Login</button>
+    </form>  
+</section>
+<br><br><br><br>
+</body>
+
+<script>
+    // JavaScript to handle sliding motion
+    function showLoginForm() {
+      const slider = document.querySelector('.slider');
+      const loginButton = document.querySelector('.login');
+      const signupButton = document.querySelector('.signup');
+      const loginForm = document.querySelector('.loginSection');
+      const signupForm = document.querySelector('.signupSection');
+
+      // Move slider to Login position
+      slider.style.transform = 'translateX(0%)';
+      loginButton.classList.add('active');
+      signupButton.classList.remove('active');
+
+      // Show Login form, hide Signup form
+      loginForm.classList.add('active');
+      signupForm.classList.remove('active');
+    }
+
+    function showSignupForm() {
+      const slider = document.querySelector('.slider');
+      const loginButton = document.querySelector('.login');
+      const signupButton = document.querySelector('.signup');
+      const loginForm = document.querySelector('.loginSection');
+      const signupForm = document.querySelector('.signupSection');
+
+      // Move slider to Sign Up position
+      slider.style.transform = 'translateX(100%)';
+      signupButton.classList.add('active');
+      loginButton.classList.remove('active');
+
+      // Show Signup form, hide Login form
+      signupForm.classList.add('active');
+      loginForm.classList.remove('active');
+    }
+  </script>
+</html>

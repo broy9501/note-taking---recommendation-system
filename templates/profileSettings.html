@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='profileSettings.css') }}">
+    </head>
+<body>
+    <nav>
+        <ul>
+            <div class="sideNav">
+                <div class="rightSideNav"><li><a href="{{ url_for('notes') }}">My Notes</a></li></div>
+                <div class="leftSideNav">
+                    <li><a href="{{ url_for('profile_settings') }}">{{ username }}</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                </div>
+            </div>
+        </ul>
+    </nav>
+
+    <section class="userSettingsForm">
+        <h1>User Settings</h1>
+        <form class="formDetails userSettings" action="{{ url_for('update_info') }}" method="post">
+            <div class="input-container">
+                <label for="uname">Username</label>
+                <input type="text" id="uname" name="username" placeholder="Enter your username" value="{{ userInfo['username'] }}"><br>
+            </div>
+        
+            <div class="input-container">
+                <label for="fname">Full Name</label>
+                <input type="text" id="fname" name="name" placeholder="Enter your full name" value="{{ userInfo['name'] }}"><br>
+            </div>
+        
+            <div class="input-container">
+                <label for="pwd">Password</label>
+                <input type="password" id="pwd" name="password" placeholder="Enter a new password if you want to change it">
+            </div>            
+        
+            <div class="input-container">
+                <label for="pwd">Email Address</label>
+                <input type="email" id="pwd" name="email" placeholder="Enter your email address" value="{{ userInfo['email'] }}"><br>
+            </div>
+        
+            <div class="input-container">
+                <label for="schoolType">Kind of School</label>
+                <select name="schoolType" id="schoolType">
+                    <option value="">{{ userInfo['kindOfSchool'] }}</option>
+                    <option value="university">University</option>
+                    <option value="college">College</option>
+                    <option value="high school">High School</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <br>
+        
+            <div class="input-container">
+                <label for="currentCourses">Current Courses or Modules</label>
+                <textarea 
+                    name="currentCourses" 
+                    id="currentCourses"
+                    placeholder="Enter your current courses or modules, separated by commas (e.g., Data Science, Calculus II, Philosophy)"
+                    required
+                >{{ userInfo['currentCM'] }}</textarea>
+            </div>
+            <br>
+        
+            <div class="input-container">
+                <label for="subjectInterest">Subjects of Interest</label>
+                <textarea 
+                    name="subjectInterest" 
+                    id="subjectInterest"
+                    placeholder="Enter subjects you're interested in (e.g., Artitifical Intelligence, Physics)"
+                >{{ userInfo['subOfInt'] }}</textarea>
+            </div>
+            <br>
+        
+            <button type="submit" class="updateButton">Save Changes</button>
+        </form>  
+    </section>
+</body>
+</html>
