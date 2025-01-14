@@ -55,6 +55,7 @@ input[type=text], input[type=password], input[type=email], textarea, select, .si
 	width: 100%;
     padding: 10px;
     border: none;
+    color: white;
     border-bottom: 3px solid red;
     border-radius: 10px;
     background-color: transparent;
@@ -66,6 +67,7 @@ input[type=text], input[type=password], input[type=email], textarea, select, .si
 input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, textarea:focus{
     border: 3px solid red;
     background-color: #f5f5f5;
+    color: black;
 }
 
 select:focus{
