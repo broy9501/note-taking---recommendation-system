@@ -13,8 +13,8 @@ bcrypt = Bcrypt(app)
 
 app.secret_key = 'xyz123'
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'broy'
-app.config['MYSQL_PASSWORD'] = 'password123'
+app.config['MYSQL_USER'] = 'username'
+app.config['MYSQL_PASSWORD'] = 'password'
 app.config['MYSQL_DB'] = 'recommendationnotetaking'
 
 mysql = MySQL(app)
