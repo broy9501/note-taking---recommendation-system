@@ -446,34 +446,32 @@ def logout():
 
 @app.route('/precision_evaluation', methods=['GET'])
 def precision_evaluation():
-    if 'loggedin' in session:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-        cursor.execute('SELECT isRelevant FROM feedbackRelevance')
-        feedback = cursor.fetchall()
+    cursor.execute('SELECT isRelevant FROM feedbackRelevance')
+    feedback = cursor.fetchall()
 
-        if not feedback:
-            print(jsonify({"error": "No feedback available to calculate precision."}))
-            return jsonify({"error": "No feedback available to calculate precision."})
+    if not feedback:
+        print(jsonify({"error": "No feedback available to calculate precision."}))
+        return jsonify({"error": "No feedback available to calculate precision."})
         
-        isRelevant = [relevance['isRelevant'] for relevance in feedback]
+    isRelevant = [relevance['isRelevant'] for relevance in feedback]
 
-        totalItemsRecommend = len(isRelevant)
-        relevantRecommend = sum(isRelevant)
-        precision = relevantRecommend / totalItemsRecommend if totalItemsRecommend > 0 else 0
+    totalItemsRecommend = len(isRelevant)
+    relevantRecommend = sum(isRelevant)
+    precision = relevantRecommend / totalItemsRecommend if totalItemsRecommend > 0 else 0
 
-        print(jsonify({
-                "precision": precision,
-                "relevant_items": relevantRecommend,
-                "total_items_recommended": totalItemsRecommend
-            }))
+    print(jsonify({
+        "precision": precision,
+        "relevant_items": relevantRecommend,
+        "total_items_recommended": totalItemsRecommend
+    }))
 
-        return jsonify({
-                "precision": precision,
-                "relevant_items": relevantRecommend,
-                "total_items_recommended": totalItemsRecommend
-            })
-    else:
-        return jsonify({"error": "Can not calculate precision of recommendation system"})
+    return jsonify({
+        "precision": precision,
+        "relevant_items": relevantRecommend,
+        "total_items_recommended": totalItemsRecommend
+    })
+
 if __name__ == "__main__":
     app.run()
