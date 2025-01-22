@@ -61,11 +61,8 @@
                 <label for="highlightColor">Highlight Color</label> -->
                 </div>
             </div>
-            <div class="editor" id="editor" contenteditable="true">
-                {{ note.content | safe if note else "Start writing your note here..." }}
-            </div>
-            <textarea name="content" id="content" style="display: none;"></textarea>
-            <button class="save-button" onclick="saveNote()">Save Note</button>
+            <textarea name="content" class="editor" id="editor" contenteditable="true" placeholder="Start writing your note here...">{% if note %}{{ note.content | safe }}{% endif %}</textarea>
+            <button class="save-button">Save Note</button>
         </div>
     </form>
 
@@ -157,11 +154,6 @@
     </script>
 
     <script>
-        function saveNote() {
-            const editorContent = document.getElementById('editor').innerHTML;
-            document.getElementById('content').value = editorContent; // Save the HTML content
-        }
-
         function submitFeedback(title, isRelevant) {
             const noteid = document.querySelector('input[name="noteid"]').value; // Get the note ID
 
