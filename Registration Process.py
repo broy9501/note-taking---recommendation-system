@@ -444,34 +444,36 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
+# Define new route that only accepts GET requests
 @app.route('/precision_evaluation', methods=['GET'])
 def precision_evaluation():
+    # Establish a connection to the MySQL database
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
+    # Fetch all relevance feedback data from ‘feedbackRelevance’ table
     cursor.execute('SELECT isRelevant FROM feedbackRelevance')
     feedback = cursor.fetchall()
 
+    # If no feedback data is available, return an error message
     if not feedback:
-        print(jsonify({"error": "No feedback available to calculate precision."}))
         return jsonify({"error": "No feedback available to calculate precision."})
         
+    # Extract the ‘isRelevant’ values from the fetched feedback
     isRelevant = [relevance['isRelevant'] for relevance in feedback]
 
-    totalItemsRecommend = len(isRelevant)
-    relevantRecommend = sum(isRelevant)
+    totalItemsRecommend = len(isRelevant)  # Total number of feedback entries
+    relevantRecommend = sum(isRelevant)    # Number of items marked as relevant
+
+    # Calculate precision: (relevant recommendations) / (total recommendations)
     precision = relevantRecommend / totalItemsRecommend if totalItemsRecommend > 0 else 0
 
-    print(jsonify({
-        "precision": precision,
-        "relevant_items": relevantRecommend,
-        "total_items_recommended": totalItemsRecommend
-    }))
-
+    # Return calculation results as a JSON response
     return jsonify({
         "precision": precision,
         "relevant_items": relevantRecommend,
         "total_items_recommended": totalItemsRecommend
     })
+
 
 if __name__ == "__main__":
     app.run()
