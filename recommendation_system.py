@@ -1,64 +1,59 @@
+import numpy as np
 import pandas as pd
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.feature_extraction.text import TfidfVectorizer
-from google_nlp_api import note_analyser  # Custom module for keyword extraction
 
-# Load the dataset containing learning materials
-filePath = 'combined_learning_materials.csv'
-data = pd.read_csv(filePath)
+# Load the catalog of learning materials
+_data_path = 'combined_learning_materials.csv'
+_data = pd.read_csv(_data_path)
+_data['Combined_Features'] = (
+    _data['Title'].fillna('') + ' ' + _data['Description'].fillna('')
+)
 
-# Combine ‘Title’ and ‘Description’ into a single feature for text analysis
-data['Combined_Features'] = data['Title'].fillna('') + '' + data['Description'].fillna('')
 
-# Initialise TF-IDF Vectorization to convert text into numerical vectors while removing English stop words
-tfidf = TfidfVectorizer(stop_words='english')
+def recommend_learning_materials(title: str, content: str, top_n: int = 3):
+    """
+    Recommend the top_n learning materials most similar to the user's note.
 
-# Transform the combined features into a TF-IDF matrix
-tfidf_matrix = tfidf.fit_transform(data['Combined_Features'])
+    If sklearn or scipy fail to import (e.g., due to DLL/page-file errors),
+    returns an empty list instead of crashing.
+    """
+    # import to avoid module-level scipy/sklearn DLL load issues
+    try:
+        from sklearn.feature_extraction.text import TfidfVectorizer
+        from sklearn.metrics.pairwise import cosine_similarity
+    except ImportError as e:
+        print(f"Warning: sklearn or scipy import failed: {e}")
+        return []
 
-# Compute the cosine similarity matrix for all learning materials
-cosineSimilarity = cosine_similarity(tfidf_matrix)
+    # Prepare texts
+    combined_series = _data['Combined_Features']
 
-def recommend_learning_materials(title, content):
-    keywordsTitle = note_analyser(title)       # Extract keywords from the note title
-    keywordsContent = note_analyser(content)   # Extract keywords from the note content
-    
-    # Combine keywords from title and content of the note
-    keywordsCombined = ' '.join(keywordsTitle + keywordsContent)
+    # Vectorize full catalog
+    tfidf = TfidfVectorizer(stop_words='english', dtype=np.float32)
+    tfidf_matrix = tfidf.fit_transform(combined_series)
 
-    # Transform user input keywords into a TF-IDF vector
-    user_tfidf = tfidf.transform([keywordsCombined])
+    # Build query from title+content
+    query = f"{title or ''} {content or ''}".strip()
+    user_vec = tfidf.transform([query])
 
-    # Compute cosine similarity between user input and learning materials
-    userSimilarityScores = cosine_similarity(user_tfidf, tfidf_matrix)
+    # Compute similarities (1×N)
+    sims = cosine_similarity(user_vec, tfidf_matrix)[0]
 
-    # Convert similarity scores into a Pandas Series indexed by material titles
-    userSimilaritySeries = pd.Series(userSimilarityScores[0], index=data['Title'])
+    # Rank & dedupe
+    sim_series = pd.Series(sims, index=_data['Title'])
+    sim_series = sim_series[~sim_series.index.duplicated(keep='first')]
+    top_items = sim_series.nlargest(top_n)
 
-    # Remove duplicated material titles, keeping the first occurrence
-    noDuplicatedSeries = userSimilaritySeries[userSimilaritySeries.index.duplicated(keep='first') == False]
-
-    # Select top 3 most relevant learning materials
-    top3 = noDuplicatedSeries.sort_values(ascending=False).head(3)
-
-    # Create recommendation list with details
-    recommendations = []
-    for title, score in top3.items():
-        # Retrieve the first matching row
-        row = data.loc[data['Title'] == title].iloc[0]
-
-        # Determine if the material is a book or an online resource (with URL)
-        resourceType = 'Book' if pd.isna(row['URL']) else 'Link'
-        
-        # Create a dictionary with material details and add it to the recommendation list
-        recommendations.append({
-            'title': title,
-            'description': row['Description'] if not pd.isna(row['Description']) else "No description available",
-            'url': row['URL'] if not pd.isna(row['URL']) else "No link available",
-            'subject': row['Subject'] if not pd.isna(row['Subject']) else "No subject area provided",
-            'author': row['Author'] if not pd.isna(row['Author']) else "No author",
-            'similarity': score,
-            'type': resourceType
+    # Assemble recommendations
+    recs = []
+    for doc_title, score in top_items.items():
+        row = _data.loc[_data['Title'] == doc_title].iloc[0]
+        recs.append({
+            'title':       doc_title,
+            'description': row['Description'] if pd.notna(row['Description']) else "No description available",
+            'url':         row['URL']         if pd.notna(row['URL'])         else "No link available",
+            'subject':     row['Subject']     if pd.notna(row['Subject'])     else "No subject area provided",
+            'author':      row['Author']      if pd.notna(row['Author'])      else "No author",
+            'similarity':  float(score),
+            'type':        'Book' if pd.isna(row['URL']) else 'Link'
         })
-    
-    return recommendations
+    return recs
